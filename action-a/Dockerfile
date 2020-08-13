@@ -1,4 +1,5 @@
-FROM debian:9.5-slim
+FROM alpine/terragrunt:latest
+LABEL maintainer="Eric Odell <eric.odell@ucop.edu>"
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
