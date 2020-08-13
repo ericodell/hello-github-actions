@@ -9,4 +9,4 @@ jobs:
       - uses: actions/checkout@v1
       - uses: ./action-a
         with:
-          TF_Version: "Mona"
+          MY_NAME: "Inigo Montoya. You killed my father. Prepare to die."
