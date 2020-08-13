@@ -1,12 +1,12 @@
-name: "Hello Actions"
-description: "Greet someone"
-author: "octocat@github.com"
+name: "Hello Action"
+description: "Say Hello to my leetle friend terraform"
+author: "eric.odell@ucop.edu"
 
 inputs:
   MY_NAME:
     description: "Who to greet"
     required: true
-    default: "World"
+    default: "UCOP"
 
 runs:
   using: "docker"
