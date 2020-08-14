@@ -7,10 +7,10 @@ ARG NODE_VERSION=12.x
 ARG ANSIBLE_VERSION=2.9.12
 
 
-RUN apt-get update && \
+RUN  echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections && \
+    apt-get update && \
     # Install add-apt-repository
-    apt-get install -y --no-install-recommends \
-      software-properties-common && \
+    apt-get install -y --no-install-recommends software-properties-common && \
     # Update git and install utils
     add-apt-repository ppa:git-core/ppa && \
     apt-get update && \
@@ -19,6 +19,11 @@ RUN apt-get update && \
       ca-certificates tar gzip zip unzip bzip2 gettext-base rsync && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
+
+# Install AWS CLI
+RUN curl -sl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip && \
+cd /tmp && unzip awscliv2.zip && ./aws/install  &&\
+aws --version
 
 # Install Nodejs
 RUN curl -sL https://deb.nodesource.com/setup_"$NODE_VERSION" | bash -
@@ -33,7 +38,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 
 # Install pip
 RUN wget "https://bootstrap.pypa.io/get-pip.py" -O /tmp/get-pip.py && \
-    python3 /tmp/get-pip.py
+    python3 /tmp/get-pip.py && \
+    pip3 --version
 
 # Install Ansible
 RUN pip3 install "ansible==$ANSIBLE_VERSION" && \
@@ -46,16 +52,11 @@ RUN pip3 install boto3 && \
     cd boto && \
     python3 setup.py install
 
-# Install AWS CLI
-RUN curl -sl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o /tmp/awscliv2.zip \
-cd /tmp && unzip awscliv2.zip && ./aws/install  &&\
-aws --version
-
 # Install Terraform
 RUN curl -sL https://releases.hashicorp.com/terraform/"$TERRAFORM_VERSION"/terraform_"$TERRAFORM_VERSION"_linux_amd64.zip -o /tmp/terraform.zip && \
-    cd /tmp/ && unzip terraform.zip -d /usr/bin && \
+    unzip /tmp/terraform.zip -d /usr/bin && \
     chmod +x /usr/bin/terraform && \
-    terrafrom --version
+    terraform --version
 
 # Install Terragrunt
 RUN curl -sL https://github.com/gruntwork-io/terragrunt/releases/download/v"$TERRAGRUNT_VERSION"/terragrunt_linux_amd64 -o /usr/bin/terragrunt && \
